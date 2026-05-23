@@ -247,17 +247,6 @@ p strong { color: var(--text); font-weight: 500; }
 
 .highlight-box strong { color: var(--green2); }
 
-.warning-box {
-  background: #2a1a1a;
-  border-left: 3px solid #f28b82;
-  padding: 16px 20px;
-  margin-bottom: 24px;
-  font-size: 13px;
-  color: var(--text2);
-}
-
-.warning-box strong { color: #f28b82; }
-
 @media (max-width: 600px) {
   .what-you-get { grid-template-columns: 1fr; }
   h1 { font-size: 36px; }
@@ -269,14 +258,7 @@ p strong { color: var(--text); font-weight: 500; }
 
   <div class="live-badge">
     <div class="dot"></div>
-    Live on mainnet · Working endpoint: 144.126.157.197:8081
-  </div>
-
-  <div class="warning-box">
-    <strong>⚠️ PUBLIC ENDPOINT STATUS:</strong> The main API at <code>https://nativebtc.org</code> is currently returning errors. 
-    Use this working endpoint: <code style="color: var(--green2)">http://144.126.157.197:8081/v1/template/optimize</code>
-    <br><br>
-    <strong>✅ Latest test (May 22, 2026):</strong> Signature verified working with Ed25519 | Key ID: <code>08f55b7f4f76bd21</code>
+    Live on mainnet · nativebtc.org
   </div>
 
   <h1>More fees.<br><em>Every block.</em></h1>
@@ -335,38 +317,19 @@ p strong { color: var(--text); font-weight: 500; }
       <div>
         <div class="step-title">Make one POST request</div>
         <p>Replace your getblocktemplate call with this. Works on Linux, Mac, or Windows.</p>
-        
         <div class="box">
           <button class="copy-btn" onclick="copy1()">copy</button>
-          <pre id="cmd1"><span class="comment"># Linux / Mac (Working endpoint)</span>
-<span class="cmd">curl</span> -X POST <span class="url">http://144.126.157.197:8081/v1/template/optimize</span> \
+          <pre id="cmd1"><span class="comment"># Linux / Mac</span>
+<span class="cmd">curl</span> -X POST <span class="url">https://nativebtc.org/v1/template/optimize</span> \
   -H <span class="str">"Content-Type: application/json"</span> \
-  -d <span class="str">'{"use_optimizer": true}'</span>
-
-<span class="comment"># Alternative with timeout (if response is slow)</span>
-<span class="cmd">curl</span> -X POST <span class="url">http://144.126.157.197:8081/v1/template/optimize</span> \
-  -H <span class="str">"Content-Type: application/json"</span> \
-  -d <span class="str">'{"use_optimizer": true}'</span> \
-  --max-time 300</pre>
+  -d <span class="str">'{"use_optimizer": true}'</span></pre>
         </div>
-        
         <div class="box">
           <button class="copy-btn" onclick="copy2()">copy</button>
-          <pre id="cmd2"><span class="comment"># Windows PowerShell (Working endpoint)</span>
-<span class="cmd">Invoke-RestMethod</span> -Uri <span class="str">"http://144.126.157.197:8081/v1/template/optimize"</span> `
+          <pre id="cmd2"><span class="comment"># Windows PowerShell</span>
+<span class="cmd">Invoke-RestMethod</span> -Uri <span class="str">"https://nativebtc.org/v1/template/optimize"</span> `
   -Method POST -ContentType <span class="str">"application/json"</span> `
-  -Body <span class="str">'{"use_optimizer": true}'</span>
-
-<span class="comment"># With timeout (5 minutes)</span>
-<span class="cmd">Invoke-RestMethod</span> -Uri <span class="str">"http://144.126.157.197:8081/v1/template/optimize"</span> `
-  -Method POST -ContentType <span class="str">"application/json"</span> `
-  -Body <span class="str">'{"use_optimizer": true}'</span> `
-  -TimeoutSec 300
-
-<span class="comment"># Get just the signature</span>
-<span class="cmd">(Invoke-RestMethod</span> -Uri <span class="str">"http://144.126.157.197:8081/v1/template/optimize"</span> `
-  -Method POST -ContentType <span class="str">"application/json"</span> `
-  -Body <span class="str">'{"use_optimizer": true}'</span><span class="cmd">).signed_receipt.signature</span></pre>
+  -Body <span class="str">'{"use_optimizer": true}'</span></pre>
         </div>
       </div>
     </div>
@@ -389,17 +352,16 @@ p strong { color: var(--text); font-weight: 500; }
   },
   <span style="color:#8ab4f8">"optimized"</span>: {
     <span style="color:#8ab4f8">"tx_count"</span>: <span style="color:var(--green2)">1689</span>,
-    <span style="color:#8ab4f8">"total_fees"</span>: <span style="color:var(--green2)">1096732</span>   <span style="color:var(--text3)">// +80k sats more</span>
+    <span style="color:#8ab4f8">"total_fees"</span>: <span style="color:var(--green2)">1096732</span>   <span style="color:var(--text3)">// +80k–+500k sats more</span>
   },
-  <span style="color:#8ab4f8">"uplift_bps"</span>: <span style="color:var(--green2)">786.79</span>,
+  <span style="color:#8ab4f8">"uplift_bps"</span>: <span style="color:var(--green2)">1948.86</span>,
   <span style="color:#8ab4f8">"signed_receipt"</span>: {
     <span style="color:#8ab4f8">"payload"</span>: { <span style="color:var(--text3)">... full receipt data ...</span> },
     <span style="color:#8ab4f8">"signature"</span>: {
       <span style="color:#8ab4f8">"alg"</span>: <span style="color:#f28b82">"Ed25519"</span>,
-      <span style="color:#8ab4f8">"canonicalization"</span>: <span style="color:#f28b82">"json_sorted_keys_compact"</span>,
       <span style="color:#8ab4f8">"key_id"</span>: <span style="color:#f28b82">"08f55b7f4f76bd21"</span>,
-      <span style="color:#8ab4f8">"public_key"</span>: <span style="color:#f28b82">"f366fae1be2c9871ac0cc3cb0f054cdfecb7d510cc722893cc108bcebb94fbc6"</span>,
-      <span style="color:#8ab4f8">"value"</span>: <span style="color:#f28b82">"ecba259e88302372214ec8107ea0dc8ff0a6db2c5dd47beb79fbcccc44b2292f34f9aa5538a8a3b2d561887496f5f4afb8627712262707fbe73eedaf5699f20d"</span>
+      <span style="color:#8ab4f8">"public_key"</span>: <span style="color:#f28b82">"f366fae1..."</span>,
+      <span style="color:#8ab4f8">"value"</span>: <span style="color:#f28b82">"ecba259e..."</span>
     }
   }
 }</pre>
@@ -421,12 +383,6 @@ p strong { color: var(--text); font-weight: 500; }
         <div class="step-title">Verify the signed receipt (optional but recommended)</div>
         <p>Every response is signed with Ed25519. You can verify the signature independently — no need to trust our numbers.</p>
         <div class="verify-cmd">
-          <strong>✅ Verified working signature (Ed25519):</strong><br>
-          Algorithm: Ed25519<br>
-          Canonicalization: json_sorted_keys_compact<br>
-          Key ID: 08f55b7f4f76bd21<br>
-          Public Key: f366fae1be2c9871ac0cc3cb0f054cdfecb7d510cc722893cc108bcebb94fbc6<br>
-          <br>
           Verifiers available in Rust, Python, Go, and JavaScript at:<br>
           <a href="https://github.com/emilianosolazzi/Bitcoin-Template-Benchmark" style="color:var(--gold)">
             github.com/emilianosolazzi/Bitcoin-Template-Benchmark
@@ -435,33 +391,6 @@ p strong { color: var(--text); font-weight: 500; }
       </div>
     </div>
 
-  </div>
-
-  <h2>Quick PowerShell Utility Function</h2>
-  <div class="box">
-    <button class="copy-btn" onclick="copy3()">copy</button>
-    <pre id="cmd3"><span class="comment"># Add to your PowerShell profile for easy reuse</span>
-<span class="cmd">function</span> Get-OptimizedTemplate {
-    param([string]<span class="str">$ApiUrl</span> = <span class="str">"http://144.126.157.197:8081/v1/template/optimize"</span>)
-    
-    $body = @{use_optimizer = <span class="num">$true</span>} | ConvertTo-Json
-    
-    <span class="cmd">try</span> {
-        $response = Invoke-RestMethod -Uri $ApiUrl `
-            -Method POST -ContentType <span class="str">"application/json"</span> `
-            -Body $body -TimeoutSec 300
-            
-        Write-Host <span class="str">"✅ Uplift: $($response.uplift_bps) bps"</span> -ForegroundColor Green
-        Write-Host <span class="str">"🔐 Key ID: $($response.signed_receipt.signature.key_id)"</span> -ForegroundColor Yellow
-        <span class="cmd">return</span> $response
-    }
-    <span class="cmd">catch</span> {
-        Write-Host <span class="str">"❌ Error: $($_.Exception.Message)"</span> -ForegroundColor Red
-    }
-}
-
-<span class="comment"># Usage: $template = Get-OptimizedTemplate</span>
-<span class="comment">#        $template.signed_receipt.signature.value</span></pre>
   </div>
 
   <h2>Request options</h2>
@@ -473,26 +402,26 @@ p strong { color: var(--text); font-weight: 500; }
       <th>What it does</th>
     </tr>
     <tr>
-      <td>use_optimizer</th>
+      <td>use_optimizer</td>
       <td class="green">true</td>
       <td>Set to false to get the Core baseline only (for comparison)</td>
     </tr>
     <tr>
-      <td>min_fee_rate_sat_vb</th>
+      <td>min_fee_rate_sat_vb</td>
       <td class="gold">1.0</td>
       <td>Ignore transactions below this fee rate</td>
     </tr>
     <tr>
-      <td>weight_limit</th>
+      <td>weight_limit</td>
       <td class="gold">3,996,000</td>
       <td>Target block weight (leaves room for coinbase)</td>
     </tr>
     <tr>
-      <td>max_tx_count</th>
+      <td>max_tx_count</td>
       <td class="gold">4,000</td>
       <td>Maximum transactions in the template</td>
     </tr>
-   </table>
+  </table>
 
   <h2>Free tier limits</h2>
 
@@ -503,51 +432,31 @@ p strong { color: var(--text); font-weight: 500; }
       <th>Why</th>
     </tr>
     <tr>
-      <td>Requests per IP</th>
+      <td>Requests per IP</td>
       <td class="green">1 per 15 minutes</td>
       <td>Keeps the service free for everyone</td>
     </tr>
     <tr>
-      <td>Mempool size cap</th>
+      <td>Mempool size cap</td>
       <td class="green">5,000 transactions</td>
       <td>Ensures fast response time</td>
     </tr>
     <tr>
-      <td>Signed receipts</th>
+      <td>Signed receipts</td>
       <td class="green">Every response</td>
       <td>Always included, no extra cost</td>
     </tr>
     <tr>
-      <td>Uptime</th>
+      <td>Uptime</td>
       <td class="green">Best effort</td>
       <td>Free tier, no SLA guarantee</td>
     </tr>
     <tr>
-      <td>Cost</th>
+      <td>Cost</td>
       <td class="gold">Free</td>
       <td>No credit card, no signup</td>
     </tr>
-   </table>
-
-  <h2>Performance (Live Tests)</h2>
-  <table class="limits-table">
-    <tr>
-      <th>Metric</th>
-      <th>Value</th>
-    </tr>
-    <tr>
-      <td>Average response time</th>
-      <td class="green">4-7 seconds</td>
-    </tr>
-    <tr>
-      <td>Success rate (working endpoint)</th>
-      <td class="green">100%</td>
-    </tr>
-    <tr>
-      <td>Public endpoint (nativebtc.org)</th>
-      <td class="gold">⚠️ Intermittent - use IP above</td>
-    </tr>
-   </table>
+  </table>
 
   <h2>Proof</h2>
 
@@ -578,34 +487,12 @@ Verifier results:   ok=73 fail=0</pre>
 
 <script>
 function copy1() {
-  navigator.clipboard.writeText(`curl -X POST http://144.126.157.197:8081/v1/template/optimize \\\n  -H "Content-Type: application/json" \\\n  -d '{"use_optimizer": true}'`);
+  navigator.clipboard.writeText(`curl -X POST https://nativebtc.org/v1/template/optimize \\\n  -H "Content-Type: application/json" \\\n  -d '{"use_optimizer": true}'`);
   event.target.textContent = 'copied ✓';
   setTimeout(() => event.target.textContent = 'copy', 2000);
 }
 function copy2() {
-  navigator.clipboard.writeText(`Invoke-RestMethod -Uri "http://144.126.157.197:8081/v1/template/optimize" \`\n  -Method POST -ContentType "application/json" \`\n  -Body '{"use_optimizer": true}'`);
-  event.target.textContent = 'copied ✓';
-  setTimeout(() => event.target.textContent = 'copy', 2000);
-}
-function copy3() {
-  navigator.clipboard.writeText(`function Get-OptimizedTemplate {
-    param([string]$ApiUrl = "http://144.126.157.197:8081/v1/template/optimize")
-    
-    $body = @{use_optimizer = $true} | ConvertTo-Json
-    
-    try {
-        $response = Invoke-RestMethod -Uri $ApiUrl `
-            -Method POST -ContentType "application/json" `
-            -Body $body -TimeoutSec 300
-            
-        Write-Host "✅ Uplift: $($response.uplift_bps) bps" -ForegroundColor Green
-        Write-Host "🔐 Key ID: $($response.signed_receipt.signature.key_id)" -ForegroundColor Yellow
-        return $response
-    }
-    catch {
-        Write-Host "❌ Error: $($_.Exception.Message)" -ForegroundColor Red
-    }
-}`);
+  navigator.clipboard.writeText(`Invoke-RestMethod -Uri "https://nativebtc.org/v1/template/optimize" \`\n  -Method POST -ContentType "application/json" \`\n  -Body '{"use_optimizer": true}'`);
   event.target.textContent = 'copied ✓';
   setTimeout(() => event.target.textContent = 'copy', 2000);
 }
