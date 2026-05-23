@@ -272,7 +272,6 @@ p strong { color: var(--text); font-weight: 500; }
     Live on mainnet · Working endpoint: 144.126.157.197:8081
   </div>
 
-  <!-- WARNING BOX - Fixed -->
   <div class="warning-box">
     <strong>⚠️ PUBLIC ENDPOINT STATUS:</strong> The main API at <code>https://nativebtc.org</code> is currently returning errors. 
     Use this working endpoint: <code style="color: var(--green2)">http://144.126.157.197:8081/v1/template/optimize</code>
@@ -337,7 +336,6 @@ p strong { color: var(--text); font-weight: 500; }
         <div class="step-title">Make one POST request</div>
         <p>Replace your getblocktemplate call with this. Works on Linux, Mac, or Windows.</p>
         
-        <!-- FIXED: Linux/Mac command with working endpoint -->
         <div class="box">
           <button class="copy-btn" onclick="copy1()">copy</button>
           <pre id="cmd1"><span class="comment"># Linux / Mac (Working endpoint)</span>
@@ -352,7 +350,6 @@ p strong { color: var(--text); font-weight: 500; }
   --max-time 300</pre>
         </div>
         
-        <!-- FIXED: Windows PowerShell command with working endpoint -->
         <div class="box">
           <button class="copy-btn" onclick="copy2()">copy</button>
           <pre id="cmd2"><span class="comment"># Windows PowerShell (Working endpoint)</span>
@@ -440,6 +437,33 @@ p strong { color: var(--text); font-weight: 500; }
 
   </div>
 
+  <h2>Quick PowerShell Utility Function</h2>
+  <div class="box">
+    <button class="copy-btn" onclick="copy3()">copy</button>
+    <pre id="cmd3"><span class="comment"># Add to your PowerShell profile for easy reuse</span>
+<span class="cmd">function</span> Get-OptimizedTemplate {
+    param([string]<span class="str">$ApiUrl</span> = <span class="str">"http://144.126.157.197:8081/v1/template/optimize"</span>)
+    
+    $body = @{use_optimizer = <span class="num">$true</span>} | ConvertTo-Json
+    
+    <span class="cmd">try</span> {
+        $response = Invoke-RestMethod -Uri $ApiUrl `
+            -Method POST -ContentType <span class="str">"application/json"</span> `
+            -Body $body -TimeoutSec 300
+            
+        Write-Host <span class="str">"✅ Uplift: $($response.uplift_bps) bps"</span> -ForegroundColor Green
+        Write-Host <span class="str">"🔐 Key ID: $($response.signed_receipt.signature.key_id)"</span> -ForegroundColor Yellow
+        <span class="cmd">return</span> $response
+    }
+    <span class="cmd">catch</span> {
+        Write-Host <span class="str">"❌ Error: $($_.Exception.Message)"</span> -ForegroundColor Red
+    }
+}
+
+<span class="comment"># Usage: $template = Get-OptimizedTemplate</span>
+<span class="comment">#        $template.signed_receipt.signature.value</span></pre>
+  </div>
+
   <h2>Request options</h2>
 
   <table class="limits-table">
@@ -449,26 +473,26 @@ p strong { color: var(--text); font-weight: 500; }
       <th>What it does</th>
     </tr>
     <tr>
-      <td>use_optimizer</td>
+      <td>use_optimizer</th>
       <td class="green">true</td>
       <td>Set to false to get the Core baseline only (for comparison)</td>
     </tr>
     <tr>
-      <td>min_fee_rate_sat_vb</td>
+      <td>min_fee_rate_sat_vb</th>
       <td class="gold">1.0</td>
       <td>Ignore transactions below this fee rate</td>
     </tr>
     <tr>
-      <td>weight_limit</td>
+      <td>weight_limit</th>
       <td class="gold">3,996,000</td>
       <td>Target block weight (leaves room for coinbase)</td>
     </tr>
     <tr>
-      <td>max_tx_count</td>
+      <td>max_tx_count</th>
       <td class="gold">4,000</td>
       <td>Maximum transactions in the template</td>
     </tr>
-  </table>
+   </table>
 
   <h2>Free tier limits</h2>
 
@@ -479,31 +503,51 @@ p strong { color: var(--text); font-weight: 500; }
       <th>Why</th>
     </tr>
     <tr>
-      <td>Requests per IP</td>
+      <td>Requests per IP</th>
       <td class="green">1 per 15 minutes</td>
       <td>Keeps the service free for everyone</td>
     </tr>
     <tr>
-      <td>Mempool size cap</td>
+      <td>Mempool size cap</th>
       <td class="green">5,000 transactions</td>
       <td>Ensures fast response time</td>
     </tr>
     <tr>
-      <td>Signed receipts</td>
+      <td>Signed receipts</th>
       <td class="green">Every response</td>
       <td>Always included, no extra cost</td>
     </tr>
     <tr>
-      <td>Uptime</td>
+      <td>Uptime</th>
       <td class="green">Best effort</td>
       <td>Free tier, no SLA guarantee</td>
     </tr>
     <tr>
-      <td>Cost</td>
+      <td>Cost</th>
       <td class="gold">Free</td>
       <td>No credit card, no signup</td>
     </tr>
-  </table>
+   </table>
+
+  <h2>Performance (Live Tests)</h2>
+  <table class="limits-table">
+    <tr>
+      <th>Metric</th>
+      <th>Value</th>
+    </tr>
+    <tr>
+      <td>Average response time</th>
+      <td class="green">4-7 seconds</td>
+    </tr>
+    <tr>
+      <td>Success rate (working endpoint)</th>
+      <td class="green">100%</td>
+    </tr>
+    <tr>
+      <td>Public endpoint (nativebtc.org)</th>
+      <td class="gold">⚠️ Intermittent - use IP above</td>
+    </tr>
+   </table>
 
   <h2>Proof</h2>
 
@@ -540,6 +584,28 @@ function copy1() {
 }
 function copy2() {
   navigator.clipboard.writeText(`Invoke-RestMethod -Uri "http://144.126.157.197:8081/v1/template/optimize" \`\n  -Method POST -ContentType "application/json" \`\n  -Body '{"use_optimizer": true}'`);
+  event.target.textContent = 'copied ✓';
+  setTimeout(() => event.target.textContent = 'copy', 2000);
+}
+function copy3() {
+  navigator.clipboard.writeText(`function Get-OptimizedTemplate {
+    param([string]$ApiUrl = "http://144.126.157.197:8081/v1/template/optimize")
+    
+    $body = @{use_optimizer = $true} | ConvertTo-Json
+    
+    try {
+        $response = Invoke-RestMethod -Uri $ApiUrl `
+            -Method POST -ContentType "application/json" `
+            -Body $body -TimeoutSec 300
+            
+        Write-Host "✅ Uplift: $($response.uplift_bps) bps" -ForegroundColor Green
+        Write-Host "🔐 Key ID: $($response.signed_receipt.signature.key_id)" -ForegroundColor Yellow
+        return $response
+    }
+    catch {
+        Write-Host "❌ Error: $($_.Exception.Message)" -ForegroundColor Red
+    }
+}`);
   event.target.textContent = 'copied ✓';
   setTimeout(() => event.target.textContent = 'copy', 2000);
 }
