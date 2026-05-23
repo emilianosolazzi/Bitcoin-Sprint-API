@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NativeBTC Template Optimizer — Integration Guide</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a0a08;
+  --bg2: #111110;
+  --bg3: #1a1a18;
+  --gold: #c8a84b;
+  --gold2: #e8c870;
+  --green: #2d9e6b;
+  --green2: #3dbe82;
+  --text: #e8e6e0;
+  --text2: #9a9890;
+  --text3: #5a5850;
+  --border: #2a2a28;
+  --mono: 'IBM Plex Mono', monospace;
+  --serif: 'Instrument Serif', serif;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--mono);
+  font-size: 14px;
+  line-height: 1.7;
+  padding: 48px 24px;
+}
+
+.wrap { max-width: 760px; margin: 0 auto; }
+
+h1 {
+  font-family: var(--serif);
+  font-size: 48px;
+  font-style: italic;
+  color: var(--text);
+  margin-bottom: 8px;
+  line-height: 1.1;
+}
+
+h1 em { color: var(--gold); font-style: normal; }
+
+.tagline {
+  font-size: 14px;
+  color: var(--text2);
+  margin-bottom: 48px;
+}
+
+.live-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  padding: 8px 16px;
+  font-size: 12px;
+  color: var(--green2);
+  margin-bottom: 48px;
+}
+
+.dot {
+  width: 6px;
+  height: 6px;
+  background: var(--green2);
+  border-radius: 50%;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+h2 {
+  font-size: 11px;
+  color: var(--text3);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  margin: 48px 0 16px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+h2::after { content:''; flex:1; height:1px; background:var(--border); }
+
+p { color: var(--text2); margin-bottom: 16px; max-width: 620px; }
+
+p strong { color: var(--text); font-weight: 500; }
+
+.box {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  padding: 20px 24px;
+  margin-bottom: 12px;
+}
+
+.box pre {
+  font-size: 12px;
+  color: var(--text2);
+  white-space: pre-wrap;
+  word-break: break-all;
+  line-height: 1.8;
+}
+
+.box pre .cmd { color: var(--gold); }
+.box pre .url { color: var(--green2); }
+.box pre .str { color: #f28b82; }
+.box pre .num { color: var(--green2); }
+.box pre .key { color: #8ab4f8; }
+.box pre .comment { color: var(--text3); }
+
+.copy-btn {
+  float: right;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text3);
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  padding: 3px 8px;
+  cursor: pointer;
+  margin-bottom: 8px;
+}
+.copy-btn:hover { color: var(--gold); border-color: var(--gold); }
+
+.steps { counter-reset: step; }
+
+.step {
+  display: grid;
+  grid-template-columns: 40px 1fr;
+  gap: 16px;
+  margin-bottom: 32px;
+  align-items: start;
+}
+
+.step-num {
+  counter-increment: step;
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  color: var(--text3);
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.step-num::before { content: counter(step); }
+
+.step-title { font-size: 14px; color: var(--text); margin-bottom: 8px; font-weight: 500; }
+
+.what-you-get {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2px;
+  background: var(--border);
+  margin-bottom: 32px;
+}
+
+.get-cell {
+  background: var(--bg2);
+  padding: 20px 24px;
+}
+
+.get-icon { font-size: 20px; margin-bottom: 8px; }
+.get-title { font-size: 13px; color: var(--text); font-weight: 500; margin-bottom: 6px; }
+.get-desc { font-size: 12px; color: var(--text2); line-height: 1.6; }
+
+.limits-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 32px;
+}
+
+.limits-table th {
+  font-size: 11px;
+  color: var(--text3);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  text-align: left;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg2);
+}
+
+.limits-table td {
+  font-size: 12px;
+  color: var(--text2);
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg2);
+}
+
+.limits-table td:first-child { color: var(--text); }
+.limits-table td.green { color: var(--green2); }
+.limits-table td.gold { color: var(--gold); }
+
+.receipt-box {
+  background: var(--bg);
+  border: 1px solid var(--gold);
+  padding: 20px 24px;
+  margin-bottom: 32px;
+}
+
+.receipt-box pre {
+  font-size: 11px;
+  color: var(--text2);
+  line-height: 1.8;
+  white-space: pre-wrap;
+}
+
+.verify-cmd {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  padding: 16px 24px;
+  font-size: 12px;
+  color: var(--text2);
+  margin-bottom: 32px;
+}
+
+.bottom-links {
+  display: flex;
+  gap: 24px;
+  font-size: 12px;
+  color: var(--text3);
+  padding-top: 32px;
+  border-top: 1px solid var(--border);
+  margin-top: 48px;
+}
+
+.bottom-links a { color: var(--gold); text-decoration: none; }
+.bottom-links a:hover { text-decoration: underline; }
+
+.highlight-box {
+  background: var(--bg3);
+  border-left: 3px solid var(--green2);
+  padding: 16px 20px;
+  margin-bottom: 24px;
+  font-size: 13px;
+  color: var(--text2);
+}
+
+.highlight-box strong { color: var(--green2); }
+
+.warning-box {
+  background: #2a1a1a;
+  border-left: 3px solid #f28b82;
+  padding: 16px 20px;
+  margin-bottom: 24px;
+  font-size: 13px;
+  color: var(--text2);
+}
+
+.warning-box strong { color: #f28b82; }
+
+@media (max-width: 600px) {
+  .what-you-get { grid-template-columns: 1fr; }
+  h1 { font-size: 36px; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="live-badge">
+    <div class="dot"></div>
+    Live on mainnet · Working endpoint: 144.126.157.197:8081
+  </div>
+
+  <!-- WARNING BOX - Fixed -->
+  <div class="warning-box">
+    <strong>⚠️ PUBLIC ENDPOINT STATUS:</strong> The main API at <code>https://nativebtc.org</code> is currently returning errors. 
+    Use this working endpoint: <code style="color: var(--green2)">http://144.126.157.197:8081/v1/template/optimize</code>
+    <br><br>
+    <strong>✅ Latest test (May 22, 2026):</strong> Signature verified working with Ed25519 | Key ID: <code>08f55b7f4f76bd21</code>
+  </div>
+
+  <h1>More fees.<br><em>Every block.</em></h1>
+  <p class="tagline">Free block template optimizer for Bitcoin mining pools · No hashpower changes · One API call</p>
+
+  <h2>What is this</h2>
+
+  <p>
+    Bitcoin Core fills blocks by picking transactions one at a time, highest fee-rate first.
+    It misses a common pattern: a <strong>cheap transaction paired with an expensive one</strong> — 
+    where taking both together earns more than skipping them both.
+  </p>
+
+  <p>
+    This API sees those pairs. It packs your block with more of the right transactions, 
+    earning you more sats per block — automatically, with no changes to your node or hardware.
+  </p>
+
+  <div class="highlight-box">
+    <strong>Median result on live mainnet:</strong> +578 bps more fees than Bitcoin Core's default. 
+    On a block with 0.3 BTC in fees, that's an extra ~$1,700. Per block. 
+    Every result is cryptographically signed so you can verify it yourself.
+  </div>
+
+  <h2>What you get</h2>
+
+  <div class="what-you-get">
+    <div class="get-cell">
+      <div class="get-icon">₿</div>
+      <div class="get-title">More fee revenue</div>
+      <div class="get-desc">Median +578 bps over Core baseline. Max +1,499 bps. Never negative across 72 live cycles.</div>
+    </div>
+    <div class="get-cell">
+      <div class="get-icon">📋</div>
+      <div class="get-title">A complete block template</div>
+      <div class="get-desc">Same format as Bitcoin Core's getblocktemplate. Drop it straight into your Stratum server.</div>
+    </div>
+    <div class="get-cell">
+      <div class="get-icon">🔐</div>
+      <div class="get-title">A signed receipt</div>
+      <div class="get-desc">Every response includes an Ed25519 signed proof of your uplift. Verify it independently. Store it. Audit it.</div>
+    </div>
+    <div class="get-cell">
+      <div class="get-icon">⚡</div>
+      <div class="get-title">Fast response</div>
+      <div class="get-desc">4–7 seconds on a live mainnet mempool. Built in Rust, connected directly to Bitcoin Core.</div>
+    </div>
+  </div>
+
+  <h2>How to use it</h2>
+
+  <div class="steps">
+
+    <div class="step">
+      <div class="step-num"></div>
+      <div>
+        <div class="step-title">Make one POST request</div>
+        <p>Replace your getblocktemplate call with this. Works on Linux, Mac, or Windows.</p>
+        
+        <!-- FIXED: Linux/Mac command with working endpoint -->
+        <div class="box">
+          <button class="copy-btn" onclick="copy1()">copy</button>
+          <pre id="cmd1"><span class="comment"># Linux / Mac (Working endpoint)</span>
+<span class="cmd">curl</span> -X POST <span class="url">http://144.126.157.197:8081/v1/template/optimize</span> \
+  -H <span class="str">"Content-Type: application/json"</span> \
+  -d <span class="str">'{"use_optimizer": true}'</span>
+
+<span class="comment"># Alternative with timeout (if response is slow)</span>
+<span class="cmd">curl</span> -X POST <span class="url">http://144.126.157.197:8081/v1/template/optimize</span> \
+  -H <span class="str">"Content-Type: application/json"</span> \
+  -d <span class="str">'{"use_optimizer": true}'</span> \
+  --max-time 300</pre>
+        </div>
+        
+        <!-- FIXED: Windows PowerShell command with working endpoint -->
+        <div class="box">
+          <button class="copy-btn" onclick="copy2()">copy</button>
+          <pre id="cmd2"><span class="comment"># Windows PowerShell (Working endpoint)</span>
+<span class="cmd">Invoke-RestMethod</span> -Uri <span class="str">"http://144.126.157.197:8081/v1/template/optimize"</span> `
+  -Method POST -ContentType <span class="str">"application/json"</span> `
+  -Body <span class="str">'{"use_optimizer": true}'</span>
+
+<span class="comment"># With timeout (5 minutes)</span>
+<span class="cmd">Invoke-RestMethod</span> -Uri <span class="str">"http://144.126.157.197:8081/v1/template/optimize"</span> `
+  -Method POST -ContentType <span class="str">"application/json"</span> `
+  -Body <span class="str">'{"use_optimizer": true}'</span> `
+  -TimeoutSec 300
+
+<span class="comment"># Get just the signature</span>
+<span class="cmd">(Invoke-RestMethod</span> -Uri <span class="str">"http://144.126.157.197:8081/v1/template/optimize"</span> `
+  -Method POST -ContentType <span class="str">"application/json"</span> `
+  -Body <span class="str">'{"use_optimizer": true}'</span><span class="cmd">).signed_receipt.signature</span></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num"></div>
+      <div>
+        <div class="step-title">Get back a complete optimized template</div>
+        <p>The response includes your optimized block, a comparison against the Core baseline, your uplift in basis points, and a signed receipt.</p>
+        <div class="receipt-box">
+          <pre>{
+  <span style="color:#8ab4f8">"template"</span>: {
+    <span style="color:#8ab4f8">"height"</span>: <span style="color:var(--green2)">950579</span>,
+    <span style="color:#8ab4f8">"transactions"</span>: [ <span style="color:var(--text3)">... optimized tx list ...</span> ],
+    <span style="color:#8ab4f8">"coinbase_value"</span>: <span style="color:var(--green2)">313596732</span>
+  },
+  <span style="color:#8ab4f8">"baseline"</span>: {
+    <span style="color:#8ab4f8">"tx_count"</span>: <span style="color:var(--green2)">1458</span>,
+    <span style="color:#8ab4f8">"total_fees"</span>: <span style="color:var(--green2)">1016736</span>   <span style="color:var(--text3)">// sats</span>
+  },
+  <span style="color:#8ab4f8">"optimized"</span>: {
+    <span style="color:#8ab4f8">"tx_count"</span>: <span style="color:var(--green2)">1689</span>,
+    <span style="color:#8ab4f8">"total_fees"</span>: <span style="color:var(--green2)">1096732</span>   <span style="color:var(--text3)">// +80k sats more</span>
+  },
+  <span style="color:#8ab4f8">"uplift_bps"</span>: <span style="color:var(--green2)">786.79</span>,
+  <span style="color:#8ab4f8">"signed_receipt"</span>: {
+    <span style="color:#8ab4f8">"payload"</span>: { <span style="color:var(--text3)">... full receipt data ...</span> },
+    <span style="color:#8ab4f8">"signature"</span>: {
+      <span style="color:#8ab4f8">"alg"</span>: <span style="color:#f28b82">"Ed25519"</span>,
+      <span style="color:#8ab4f8">"canonicalization"</span>: <span style="color:#f28b82">"json_sorted_keys_compact"</span>,
+      <span style="color:#8ab4f8">"key_id"</span>: <span style="color:#f28b82">"08f55b7f4f76bd21"</span>,
+      <span style="color:#8ab4f8">"public_key"</span>: <span style="color:#f28b82">"f366fae1be2c9871ac0cc3cb0f054cdfecb7d510cc722893cc108bcebb94fbc6"</span>,
+      <span style="color:#8ab4f8">"value"</span>: <span style="color:#f28b82">"ecba259e88302372214ec8107ea0dc8ff0a6db2c5dd47beb79fbcccc44b2292f34f9aa5538a8a3b2d561887496f5f4afb8627712262707fbe73eedaf5699f20d"</span>
+    }
+  }
+}</pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num"></div>
+      <div>
+        <div class="step-title">Use the template in your Stratum server</div>
+        <p>The optimized transaction list is in the same format as Bitcoin Core's GBT. Feed it directly into your block builder. No format conversion needed.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num"></div>
+      <div>
+        <div class="step-title">Verify the signed receipt (optional but recommended)</div>
+        <p>Every response is signed with Ed25519. You can verify the signature independently — no need to trust our numbers.</p>
+        <div class="verify-cmd">
+          <strong>✅ Verified working signature (Ed25519):</strong><br>
+          Algorithm: Ed25519<br>
+          Canonicalization: json_sorted_keys_compact<br>
+          Key ID: 08f55b7f4f76bd21<br>
+          Public Key: f366fae1be2c9871ac0cc3cb0f054cdfecb7d510cc722893cc108bcebb94fbc6<br>
+          <br>
+          Verifiers available in Rust, Python, Go, and JavaScript at:<br>
+          <a href="https://github.com/emilianosolazzi/Bitcoin-Template-Benchmark" style="color:var(--gold)">
+            github.com/emilianosolazzi/Bitcoin-Template-Benchmark
+          </a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <h2>Request options</h2>
+
+  <table class="limits-table">
+    <tr>
+      <th>Field</th>
+      <th>Default</th>
+      <th>What it does</th>
+    </tr>
+    <tr>
+      <td>use_optimizer</td>
+      <td class="green">true</td>
+      <td>Set to false to get the Core baseline only (for comparison)</td>
+    </tr>
+    <tr>
+      <td>min_fee_rate_sat_vb</td>
+      <td class="gold">1.0</td>
+      <td>Ignore transactions below this fee rate</td>
+    </tr>
+    <tr>
+      <td>weight_limit</td>
+      <td class="gold">3,996,000</td>
+      <td>Target block weight (leaves room for coinbase)</td>
+    </tr>
+    <tr>
+      <td>max_tx_count</td>
+      <td class="gold">4,000</td>
+      <td>Maximum transactions in the template</td>
+    </tr>
+  </table>
+
+  <h2>Free tier limits</h2>
+
+  <table class="limits-table">
+    <tr>
+      <th>Limit</th>
+      <th>Value</th>
+      <th>Why</th>
+    </tr>
+    <tr>
+      <td>Requests per IP</td>
+      <td class="green">1 per 15 minutes</td>
+      <td>Keeps the service free for everyone</td>
+    </tr>
+    <tr>
+      <td>Mempool size cap</td>
+      <td class="green">5,000 transactions</td>
+      <td>Ensures fast response time</td>
+    </tr>
+    <tr>
+      <td>Signed receipts</td>
+      <td class="green">Every response</td>
+      <td>Always included, no extra cost</td>
+    </tr>
+    <tr>
+      <td>Uptime</td>
+      <td class="green">Best effort</td>
+      <td>Free tier, no SLA guarantee</td>
+    </tr>
+    <tr>
+      <td>Cost</td>
+      <td class="gold">Free</td>
+      <td>No credit card, no signup</td>
+    </tr>
+  </table>
+
+  <h2>Proof</h2>
+
+  <p>
+    All claims are backed by a 72-cycle, 6-hour shadow run against a live Bitcoin Core 29.0 node on mainnet.
+    Every cycle is signed with Ed25519. The manifest SHA-256 pins all 72 envelopes.
+    You can download and verify every file yourself.
+  </p>
+
+  <div class="box">
+    <pre>Cycles completed:   72
+Window:             6 hours · live mainnet
+Uplift min:         124.10 bps
+Uplift median:      577.51 bps  
+Uplift mean:        627.06 bps
+Uplift max:         1,499.18 bps
+Total extra sats:   7,400,254
+Verifier results:   ok=73 fail=0</pre>
+  </div>
+
+  <div class="bottom-links">
+    <span>© 2026 Emiliano Solazzi · All rights reserved</span>
+    <a href="https://github.com/emilianosolazzi/Bitcoin-Template-Benchmark">Proof repo →</a>
+    <a href="mailto:emiliano.arlington@gmail.com">Contact →</a>
+  </div>
+
+</div>
+
+<script>
+function copy1() {
+  navigator.clipboard.writeText(`curl -X POST http://144.126.157.197:8081/v1/template/optimize \\\n  -H "Content-Type: application/json" \\\n  -d '{"use_optimizer": true}'`);
+  event.target.textContent = 'copied ✓';
+  setTimeout(() => event.target.textContent = 'copy', 2000);
+}
+function copy2() {
+  navigator.clipboard.writeText(`Invoke-RestMethod -Uri "http://144.126.157.197:8081/v1/template/optimize" \`\n  -Method POST -ContentType "application/json" \`\n  -Body '{"use_optimizer": true}'`);
+  event.target.textContent = 'copied ✓';
+  setTimeout(() => event.target.textContent = 'copy', 2000);
+}
+</script>
+
+</body>
+</html>
