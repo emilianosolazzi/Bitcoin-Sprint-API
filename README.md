@@ -4,7 +4,8 @@
 
 Free block template optimization API for Bitcoin mining pools. No hashpower changes. No node changes. One API call.
 Try it free, verify the results yourself, then we can talk about what a deeper relationship looks like.”
-
+API is live at nativebtc.org — 
+one call, GBT-compatible output, signed receipt on every response. If you hit a mempool size error, that means the mempool is running hot at 8,000+ transactions — when conditions are like that, the uplift is even higher.”
 ---
 
 ## What it does
