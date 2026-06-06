@@ -3,6 +3,7 @@
 **More fees. Every block.**
 
 Free block template optimization API for Bitcoin mining pools. No hashpower changes. No node changes. One API call.
+Try it free, verify the results yourself, then we can talk about what a deeper relationship looks like.”
 
 ---
 
